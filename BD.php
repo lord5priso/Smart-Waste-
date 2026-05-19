@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS `reports` 
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `mairie` VARCHAR(100) NOT NULL,
+  `lat` DECIMAL(10, 8) NOT NULL,
+  `lng` DECIMAL(11, 8) NOT NULL,
+  `description` TEXT,
+  `photo` VARCHAR(255) DEFAULT NULL,
+  `votes` INT DEFAULT 1,
+  `status` ENUM('signaled', 'in_progress', 'cleaned') DEFAULT 'signaled',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+ ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ALTER TABLE `reports` 
+ADD COLUMN `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
