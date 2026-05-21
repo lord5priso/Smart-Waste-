@@ -2,20 +2,22 @@
 // 1. Inclusion de la configuration de la base de données (Aiven)
 include 'config.php';
 
-// --- ALTERATION TEMPORAIRE BDD POUR AJOUTER LAT/LNG ---
-$sql_alter = "
-ALTER TABLE `reports` ADD COLUMN IF NOT EXISTS `lat` DECIMAL(10, 8) NULL AFTER `id`;
-ALTER TABLE `reports` ADD COLUMN IF NOT EXISTS `lng` DECIMAL(11, 8) NULL AFTER `lat`;
-";
+// --- ALTERATION VERSION COMPATIBLE BDD ---
+try {
+    // 1. Essai d'ajout de la colonne lat
+    $conn->query("ALTER TABLE `reports` ADD `lat` DECIMAL(10, 8) NULL AFTER `id`");
+} catch (Exception $e) {
+    // Si la colonne existe déjà, MySQL lève une exception, on l'ignore proprement
+}
 
-if (isset($conn) && $conn) {
-    if ($conn->multi_query($sql_alter)) {
-        do {
-            if ($result = $conn->store_result()) { $result->free(); }
-        } while ($conn->next_result());
-    }
+try {
+    // 2. Essai d'ajout de la colonne lng
+    $conn->query("ALTER TABLE `reports` ADD `lng` DECIMAL(11, 8) NULL AFTER `lat`");
+} catch (Exception $e) {
+    // Idem si lng existe déjà
 }
 // --- FIN DU SCRIPT D'ALTERATION ---
+
 
 // --- SCRIPT D'INSTALLATION TEMPORAIRE BDD ---
 // Ce script crée automatiquement les tables sur Aiven si elles n'existent pas encore
